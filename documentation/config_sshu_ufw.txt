@@ -1,0 +1,9 @@
+Mardi 14/04 : 
+
+scan de ports (depuis une autre vm kali linux)
+Generation de cle ssh depuis powershell de mon pc local
+changement de port 22, maintenant 2222
+interdire root
+authentification par cle, desactivation de l'authentification par mot de passe
+installation du pare-feu ufw, on bloque tout par défaut
+On autorise seulement le port 2222/tcp
