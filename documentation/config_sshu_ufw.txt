@@ -1,56 +1,79 @@
-Mardi 14/04 : 
+Mardi 14/04/2026 : 
 
 
-      Audit Initial :
+            Audit Initial :
 
-    scan de ports (depuis une autre vm(kali linux)) :
+      scan de ports (depuis une autre vm(kali linux)) :
 nmap -sV 192.168.159.130
 
 
 
 
-        Configuration SSH et clés :
+            Configuration SSH et clés :
 
-    Generation et envoi de cle ssh depuis powershell de mon pc local :
+      Generation et envoi de cle ssh depuis powershell de mon pc local :
 ssh-keygen -t ed25519
 type $env:USERPROFILE\.ssh\id_ed25519.pub | ssh ubuntu@192.168.159.130 "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"
 
 
-    Changement de port 22, maintenant 2222, interdire root et authentification par cle, desactivation de l'authentification par mot de passe :
+      Changement de port 22, maintenant 2222, interdire root et authentification par cle, desactivation de l'authentification par mot de passe :
 sudo nano /etc/ssh/sshd_config
 Port 2222, PermitRootLogin no, PasswordAuthentication no
 
 
-    Désactivation du socket par défaut :
+      Désactivation du socket par défaut :
 sudo systemctl stop ssh.socket
 sudo systemctl disable ssh.socket
 
 
-    Redémarrage du service :
+      Redémarrage du service :
 sudo systemctl daemon-reload
 sudo systemctl restart ssh.service
 
 
-    Vérification de l'écoute sur le port 2222 :
+      Vérification de l'écoute sur le port 2222 :
 sudo ss -tulnp | grep sshd
 
 
 
 
-        Pare-feu UFW :
+            Pare-feu UFW :
 
-    Installation du pare-feu ufw, on bloque tout par défaut :
+      Installation du pare-feu ufw, on bloque tout par défaut :
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
 
 
-    On autorise seulement le port 2222/tcp :
+      On autorise seulement le port 2222/tcp :
 sudo ufw allow 2222/tcp
 
 
-    Activation du pare-feu :
+      Activation du pare-feu :
 sudo ufw enable
 
 
-    Verification de l'état :
+      Verification de l'état :
 sudo ufw status
+
+
+
+Mercredi 15/04/2026 :
+
+
+            Sécurité Réseau avec Fail2Ban :
+
+      Installation et configuration de Fail2Ban:
+sudo apt install fail2ban -y
+sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+sudo nano /etc/fail2ban/jail.local
+[sshd]
+enabled = true, port = 2222, logpath = %(sshd_log)s, backend = %(sshd_backend)s, maxretry = 3, bantime = 1h
+
+
+      Gestion du service Fail2Ban :
+sudo systemctl restart fail2ban
+sudo fail2ban-client status sshd
+
+
+      Commande de débannissement :
+sudo fail2ban-client set sshd unbanip 192.168.159.1
