@@ -1,0 +1,7 @@
+AUDIT DU 16/04/2026 12:37:24
+----------------------------------------
+[OK] Service SSH est actif
+[OK] Service FAIL2BAN est actif
+[OK] SSH écoute bien sur le port 2222
+[OK] Authentification par mot de passe : DÉSACTIVÉE
+[INFO] Fail2Ban :    `- Banned IP list:
