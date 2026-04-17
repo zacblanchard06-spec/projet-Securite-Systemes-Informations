@@ -50,15 +50,6 @@ def generer_audit():
     print(res)
     lignes_rapport.append(res)
 
-    print("Checking last logins...")
-    logins = run_command("last -n 5 -a -i | head -n 5")
-    res_title = "\n[HISTORIQUE] Dernières connexions réussies :"
-    
-    print(res_title)
-    lignes_rapport.append(res_title)
-    
-    print(logins)
-    lignes_rapport.append(logins)
 
     with open(FICHIER_RAPPORT, "w") as f:
         f.write("\n".join(lignes_rapport))
